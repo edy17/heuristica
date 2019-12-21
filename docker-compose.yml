@@ -1,0 +1,8 @@
+version: '3.7'
+
+services:
+  native_build:
+    build:
+      context: .
+    volumes:
+      - ./target:/tmp/share
