@@ -14,14 +14,14 @@
   </div>
 </div>
 <!-- Page Content-->
-<div class="container padding-bottom-3x mb-2">
+<div class="container-fluid mb-2">
   <div class="row">
-    <div class="col-lg-9 col-md-8 order-md-2" fxLayout="column" fxLayoutAlign="center center">
-<!--      <router-outlet (activate)="onActivate($event) ">-->
-<!--      </router-outlet>-->
-    </div>
+
+    <canvas #rendererCanvas style="background-color: #151515;color: #000;"
+            class="col-lg-10 col-md-8 order-md-2" fxLayout="column" fxLayoutAlign="center center"></canvas>
+
     <!-- Side Menu-->
-    <div class="col-lg-3 col-md-4 order-md-1">
+    <div class="col-lg-2 col-md-4 order-md-1">
       <div class="padding-top-3x hidden-md-up"></div>
       <div class="card rounded-bottom-0" data-filter-list="#components-list">
         <div class="card-body pb-3">
@@ -34,11 +34,15 @@
         </div>
       </div>
       <nav class="list-group" id="components-list">
-        <a class="list-group-item list-group-item-action active" href="#" data-filter-item="af">
+        <a (click)="generatePoints($event)" class="list-group-item list-group-item-action" href="#"
+           data-filter-item="af">
           Generate Random Points
         </a>
         <a class="list-group-item list-group-item-action" href="#" data-filter-item="af">
           Minimum Circle
+        </a>
+        <a class="list-group-item list-group-item-action" href="#" data-filter-item="af">
+          Clear canvas
         </a>
       </nav>
     </div>
