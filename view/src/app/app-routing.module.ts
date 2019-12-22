@@ -1,11 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {PostComponent} from "./post/post.component";
 
-const routes: Routes = [
-  {path: 'posts/:p1', component: PostComponent},
-  {path: '', redirectTo: 'posts/0', pathMatch: 'full'}
-];
+const routes: Routes = [];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, {onSameUrlNavigation: 'reload'})],

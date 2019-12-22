@@ -9,4 +9,7 @@ export class AppComponent implements OnInit {
   title = 'heuristica';
   style;
 
+  ngOnInit(): void {
+  }
+
 }

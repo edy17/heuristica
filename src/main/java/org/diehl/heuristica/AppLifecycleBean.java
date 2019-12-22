@@ -15,14 +15,9 @@ public class AppLifecycleBean {
 
     void onStart(@Observes StartupEvent event) {
         logger.info("The application is starting... {}", event);
-
     }
 
     void onStop(@Observes ShutdownEvent event) {
         logger.info("The application is stopping... {}", event);
-    }
-
-    private void generateRandomPoints() {
-
     }
 }
