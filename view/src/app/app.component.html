@@ -9,7 +9,7 @@
 <div class="page-title">
   <div class="container">
     <div class="column">
-      <h1>Testing geometric algorithms and NP-complete problems on a random distribution points</h1>
+      <h1>Testing geometric algorithms and NP-complete problems on a random distribution of 1000 points</h1>
     </div>
   </div>
 </div>
@@ -34,14 +34,17 @@
         </div>
       </div>
       <nav class="list-group" id="components-list">
-        <a (click)="generatePoints($event)" class="list-group-item list-group-item-action" href="#"
+        <a (click)="generateRandomPoints()" class="list-group-item list-group-item-action" href="#"
            data-filter-item="af">
           Generate Random Points
         </a>
         <a class="list-group-item list-group-item-action" href="#" data-filter-item="af">
-          Minimum Circle
+          Minimum Circle diameter
         </a>
         <a class="list-group-item list-group-item-action" href="#" data-filter-item="af">
+          Minimum Circle
+        </a>
+        <a (click)="clearCanvas()" class="list-group-item list-group-item-action" href="#" data-filter-item="af">
           Clear canvas
         </a>
       </nav>

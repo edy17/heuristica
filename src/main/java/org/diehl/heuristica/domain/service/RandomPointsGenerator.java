@@ -10,27 +10,31 @@ import java.util.concurrent.CompletableFuture;
 @ApplicationScoped
 public class RandomPointsGenerator {
 
-    private static int maxWidth = 1400;
-    private static int maxHeight = 900;
+    private static int maxWidth = 1200;
+    private static int maxHeight = 600;
 
-    public double distanceToCenter(int x, int y) {
-        return Math.sqrt(Math.pow((double) (x - maxWidth / 2), 2.0D) + Math.pow((double) (y - maxHeight / 2), 2.0D));
+    public double distanceToCenter(int x, int y, float centerWidthRatio) {
+        return Math.sqrt(Math.pow((double) (x - maxWidth * centerWidthRatio), 2.0D) + Math.pow((double) (y - maxHeight / 2), 2.0D));
     }
 
     public CompletableFuture<List<Point>> generateRandomPoints() {
         return CompletableFuture.supplyAsync(() -> {
             List<Point> points = new ArrayList<>();
             Random generator = new Random();
-            int numberOfPoints = 10000;
-            for (int i = 0; i < numberOfPoints; ++i) {
+            int numberOfPoints = 1000;
+            int i = 0;
+            while (i < numberOfPoints) {
                 int x;
                 int y;
-                int radius = 200;
-                do {
-                    x = generator.nextInt(maxWidth);
-                    y = generator.nextInt(maxHeight);
+                x = generator.nextInt(maxWidth);
+                y = generator.nextInt(maxHeight);
+                if ((((distanceToCenter(x, y, 1f / 4f) < 200) || (distanceToCenter(x, y, 3f / 4f) < 200))
+                        && ((distanceToCenter(x, y, 1f / 4f) > 210) || (distanceToCenter(x, y, 3f / 4f) > 210))
+                        && (distanceToCenter(x, y, 1f / 2f) < 300))
+                        || (distanceToCenter(x, y, 1f / 2f) < 200)) {
                     points.add(new Point(x, y));
-                } while (distanceToCenter(x, y) >= (double) radius * 1.4D && (distanceToCenter(x, y) >= (double) radius * 1.6D || generator.nextInt(5) != 1) && (distanceToCenter(x, y) >= (double) radius * 1.8D || generator.nextInt(10) != 1) && (maxHeight / 5 >= x || x >= 4 * maxHeight / 5 || maxHeight / 5 >= y || y >= 4 * maxHeight / 5 || generator.nextInt(100) != 1));
+                    i++;
+                }
             }
             return points;
         });
