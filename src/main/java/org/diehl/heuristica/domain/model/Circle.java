@@ -9,12 +9,10 @@ import java.awt.*;
 public class Circle {
 
     private Point center;
-    private double radius;
     private Line diameter;
 
-    public Circle(Point center, double radius, Line diameter) {
+    public Circle(Point center, Line diameter) {
         this.center = center;
-        this.radius = radius;
         this.diameter = diameter;
     }
 
@@ -22,7 +20,7 @@ public class Circle {
         return this.center;
     }
 
-    public double getRadius() {
-        return this.radius;
+    public Line getDiameter() {
+        return diameter;
     }
 }

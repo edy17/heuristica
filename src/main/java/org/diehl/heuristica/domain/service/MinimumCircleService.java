@@ -43,7 +43,7 @@ public class MinimumCircleService {
         Point b = new Point();
         a.setLocation(cX +  Math.cos(i*Math.PI)*cRadius, cY + Math.sin(i*Math.PI)*cRadius);
         b.setLocation(cX+  Math.cos(i*Math.PI-Math.PI)*cRadius, cY + Math.sin(i*Math.PI-Math.PI)*cRadius);
-        return new Circle(new Point((int) cX, (int) cY), (int) cRadius, new Line(a,b));
+        return new Circle(new Point((int) cX, (int) cY), new Line(a,b));
     }
 
 }

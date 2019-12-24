@@ -38,11 +38,14 @@
            data-filter-item="af">
           Generate Random Points
         </a>
-        <a class="list-group-item list-group-item-action" href="#" data-filter-item="af">
+        <a (click)="drawMinimumCircleDiameter()" class="list-group-item list-group-item-action" href="#" data-filter-item="af">
           Minimum Circle diameter
         </a>
-        <a class="list-group-item list-group-item-action" href="#" data-filter-item="af">
+        <a (click)="drawMinimumCircle()" class="list-group-item list-group-item-action" href="#" data-filter-item="af">
           Minimum Circle
+        </a>
+        <a (click)="drawMinimumConvexEnvelope()" class="list-group-item list-group-item-action" href="#" data-filter-item="af">
+          Convex envelope
         </a>
         <a (click)="clearCanvas()" class="list-group-item list-group-item-action" href="#" data-filter-item="af">
           Clear canvas

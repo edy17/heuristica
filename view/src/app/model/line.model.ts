@@ -7,7 +7,6 @@ export class Line implements Deserializable {
   q: Point;
 
   deserialize(input: any): this {
-    Object.assign(this, input);
     this.p = new Point().deserialize(input.p);
     this.q = new Point().deserialize(input.q)
     return this;
