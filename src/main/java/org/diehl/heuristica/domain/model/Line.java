@@ -2,18 +2,15 @@ package org.diehl.heuristica.domain.model;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
-import javax.validation.constraints.NotNull;
 import java.awt.*;
 
 @RegisterForReflection
 public class Line {
 
-    @NotNull
     private Point p;
-    @NotNull
     private Point q;
 
-    public Line(@NotNull Point p, @NotNull Point q) {
+    public Line(Point p, Point q) {
         this.p = p;
         this.q = q;
     }

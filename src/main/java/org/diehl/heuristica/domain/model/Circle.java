@@ -3,22 +3,26 @@ package org.diehl.heuristica.domain.model;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
-import javax.validation.constraints.NotNull;
 import java.awt.*;
 
 @RegisterForReflection
 public class Circle {
 
-    @NotNull
     private Point center;
-    @NotNull
-    private int radius;
+    private double radius;
+    private Line diameter;
+
+    public Circle(Point center, double radius, Line diameter) {
+        this.center = center;
+        this.radius = radius;
+        this.diameter = diameter;
+    }
 
     public Point getCenter() {
         return this.center;
     }
 
-    public int getRadius() {
+    public double getRadius() {
         return this.radius;
     }
 }

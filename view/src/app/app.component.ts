@@ -116,16 +116,17 @@ export class AppComponent implements OnInit, OnDestroy {
   public loadRandomPoints() {
     this.spatiumService.getPoints(this.spatiumService.host + '/points')
       .subscribe(points => {
-        points.map(p => (this.setPoint(p))).reduce(((p, c) => {
-          let geometry = new THREE.Geometry();
-          geometry.vertices.push(
-            p.position,
-            c.position
-          );
-          let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: "blue"}));
-          this.scene.add(line);
-          return c;
-        }));
+        points.map(p => (this.setPoint(p)))
+        //   .reduce(((p, c) => {
+        //   let geometry = new THREE.Geometry();
+        //   geometry.vertices.push(
+        //     p.position,
+        //     c.position
+        //   );
+        //   let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: "blue"}));
+        //   this.scene.add(line);
+        //   return c;
+        // }));
       }), err => {
       console.log(err);
     };
