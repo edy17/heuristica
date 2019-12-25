@@ -25,7 +25,9 @@ export class AppComponent implements OnInit, OnDestroy {
   frameId: number = null;
 
   randomPointsUUID: string = null;
-  minimumCircle: Circle = null;
+  convexEnvelope: Array<THREE.Line> = null;
+  minimumCircleDiameter: THREE.Line = null;
+  minimumCircle: THREE.Line = null;
 
   @ViewChild('rendererCanvas', {static: true})
   public rendererCanvas: ElementRef<HTMLCanvasElement>;
@@ -48,7 +50,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   initCanvas(): void {
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(100,
+    this.camera = new THREE.PerspectiveCamera(95,
       this.canvas.clientWidth / this.canvas.clientHeight, 1, 1000);
     this.camera.position.set(0, 0, 10);
     this.renderer = new THREE.WebGLRenderer({
@@ -80,11 +82,13 @@ export class AppComponent implements OnInit, OnDestroy {
       this.scene.remove(this.scene.children[0]);
     }
     this.randomPointsUUID = null;
+    this.convexEnvelope = null;
+    this.minimumCircleDiameter = null;
     this.minimumCircle = null;
     return false;
   }
 
-  setPoint(input: Point, color): THREE.Mesh {
+  setPoint(input: Point, color, isVisible: boolean): THREE.Mesh {
     let point = new THREE.Vector2();
     point.x = (input.x / this.canvas.clientWidth) * 2 - 1;
     point.y = -(input.y / this.canvas.clientHeight) * 2 + 1;
@@ -99,90 +103,120 @@ export class AppComponent implements OnInit, OnDestroy {
         wireframe: false
       }));
     sphere.position.copy(this.point);
+    sphere.visible = isVisible;
     this.scene.add(sphere);
     return sphere;
   }
 
+  setLine(p: THREE.Mesh, q: THREE.Mesh, color, isVisible: boolean): THREE.Line {
+    let geometry = new THREE.Geometry();
+    geometry.vertices.push(p.position, q.position);
+    let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: color}));
+    line.visible = isVisible;
+    this.scene.add(line);
+    return line;
+  }
+
   loadRandomPoints() {
-    this.spatiumService.getDetailedPoints(this.spatiumService.host + '/points')
-      .subscribe(detailedPoints => {
-        detailedPoints.randomPoints.map(p => (this.setPoint(p, "yellow")));
-        this.minimumCircle = null;
-        this.randomPointsUUID = detailedPoints.sessionUUID;
-        this.getMinimumCircle();
-      }), err => {
-      console.log(err);
-    };
-  }
-
-  getMinimumCircle() {
-    this.spatiumService.getCircle(this.spatiumService.host + '/points/circle/' + this.randomPointsUUID)
-      .subscribe(circle => {
-        this.minimumCircle = circle
-      }), err => {
-      console.log(err);
-    };
-  }
-
-  generateRandomPoints() {
     while (this.scene.children.length > 0) {
       this.scene.remove(this.scene.children[0]);
     }
-    this.loadRandomPoints();
-    return false;
+    this.spatiumService.getDetailedPoints(this.spatiumService.host + '/points')
+      .subscribe(detailedPoints => {
+        this.convexEnvelope = null;
+        this.minimumCircleDiameter = null;
+        this.minimumCircle = null;
+        this.randomPointsUUID = null;
+        detailedPoints.randomPoints.map(p => (this.setPoint(p, "yellow", true)));
+        this.randomPointsUUID = detailedPoints.sessionUUID;
+        this.getConvexEnvelope();
+        this.getMinimumDomainCircle();
+      }), err => {
+      console.log(err);
+    };
   }
 
-  drawMinimumConvexEnvelope() {
+  getConvexEnvelope() {
     if (this.randomPointsUUID) {
       this.spatiumService.getPoints(this.spatiumService.host + '/points/convex/' + this.randomPointsUUID)
         .subscribe(points => {
-          let tmp = points.map(p => (this.setPoint(p, "blue")));
+          let lines = new Array<THREE.Line>();
+          let tmp = points.map(p => (this.setPoint(p, "blue", false)));
           tmp.reduce(((p, c) => {
-            let geometry = new THREE.Geometry();
-            geometry.vertices.push(p.position, c.position);
-            let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: "blue"}));
-            this.scene.add(line);
+            let line = this.setLine(p, c, "blue", false);
+            lines.push(line);
             return c;
           }));
           let first = tmp.shift();
           let last = tmp.pop();
-          let geometry = new THREE.Geometry();
-          geometry.vertices.push(first.position, last.position);
-          let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: "blue"}));
-          this.scene.add(line);
+          let line = this.setLine(first, last, "blue", false);
+          lines.push(line);
+          this.convexEnvelope = lines;
         }), err => {
         console.log(err);
       };
     }
+  }
+
+  getMinimumDomainCircle() {
+    if (this.randomPointsUUID) {
+      this.spatiumService.getCircle(this.spatiumService.host + '/points/circle/' + this.randomPointsUUID)
+        .subscribe(circle => {
+          this.getMinimumCircle(circle);
+          this.getMinimumCircleDiameter(circle);
+        }), err => {
+        console.log(err);
+      };
+    }
+  }
+
+  getMinimumCircleDiameter(circle: Circle) {
+    let p = this.setPoint(circle.diameter.p, "red", false);
+    let q = this.setPoint(circle.diameter.q, "red", false);
+    let line = this.setLine(p, q, "red", false);
+    this.minimumCircleDiameter = line;
+    this.scene.add(line);
+  }
+
+  getMinimumCircle(circle: Circle) {
+    let geometry = new THREE.Geometry();
+    let p = this.setPoint(circle.diameter.p, "red", false).position;
+    let center = this.setPoint(circle.center, "red", false).position;
+    let radius = center.distanceTo(p);
+    for (let i = 0; i <= 360; i++) {
+      geometry.vertices.push(new THREE.Vector3(center.x + Math.cos(i * (Math.PI / 180)) * radius, center.y + Math.sin(i * (Math.PI / 180)) * radius, 0));
+    }
+    let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: "red"}));
+    line.visible = false;
+    this.minimumCircle = line;
+    this.scene.add(line);
+  }
+
+  generateRandomPoints() {
+    this.controls.reset();
+    this.loadRandomPoints();
     return false;
   }
 
-  drawMinimumCircleDiameter() {
-    if (this.randomPointsUUID && this.minimumCircle) {
-      let p = this.setPoint(this.minimumCircle.diameter.p, "red");
-      let q = this.setPoint(this.minimumCircle.diameter.q, "red");
-      let geometry = new THREE.Geometry();
-      geometry.vertices.push(
-        p.position,
-        q.position
-      );
-      let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: "red"}));
-      this.scene.add(line);
+  showConvexEnvelope() {
+    if (this.convexEnvelope) {
+      this.convexEnvelope.forEach(line => {
+        line.visible = !line.visible;
+      })
     }
     return false;
   }
 
-  drawMinimumCircle() {
-    if (this.randomPointsUUID && this.minimumCircle) {
-      let geometry = new THREE.Geometry();
-      let p = this.setPoint(this.minimumCircle.diameter.p, "red").position;
-      let center = this.setPoint(this.minimumCircle.center, "red").position;
-      let radius = center.distanceTo(p);
-      for (let i = 0; i <= 360; i++) {
-        geometry.vertices.push(new THREE.Vector3(center.x + Math.cos(i * (Math.PI / 180)) * radius, center.y + Math.sin(i * (Math.PI / 180)) * radius, 0));
-      }
-      let line = new THREE.Line(geometry, new THREE.LineBasicMaterial({color: "red"}));
-      this.scene.add(line);
+  showMinimumCircleDiameter() {
+    if (this.minimumCircleDiameter) {
+      this.minimumCircleDiameter.visible = !this.minimumCircleDiameter.visible;
+    }
+    return false;
+  }
+
+  showMinimumCircle() {
+    if (this.minimumCircle) {
+      this.minimumCircle.visible = !this.minimumCircle.visible;
     }
     return false;
   }
