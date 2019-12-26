@@ -3,13 +3,12 @@ package org.diehl.heuristica.application.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import org.diehl.heuristica.domain.model.Circle;
+import org.diehl.heuristica.domain.model.Point;
 
-import java.awt.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 @RegisterForReflection
-public class DetailedPoints implements Serializable {
+public class DetailedPoints {
 
     private String sessionUUID;
     private ArrayList<Point> randomPoints;

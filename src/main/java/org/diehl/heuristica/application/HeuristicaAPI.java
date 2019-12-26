@@ -2,6 +2,7 @@ package org.diehl.heuristica.application;
 
 import org.diehl.heuristica.application.dto.DetailedPoints;
 import org.diehl.heuristica.domain.model.Circle;
+import org.diehl.heuristica.domain.model.Point;
 import org.diehl.heuristica.domain.service.ConvexEnvelopeService;
 import org.diehl.heuristica.domain.service.MTSPService;
 import org.diehl.heuristica.domain.service.MinimumCircleService;
@@ -9,7 +10,6 @@ import org.diehl.heuristica.domain.service.TSPService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;

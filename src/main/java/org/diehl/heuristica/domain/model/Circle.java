@@ -1,9 +1,6 @@
 package org.diehl.heuristica.domain.model;
 
-
 import io.quarkus.runtime.annotations.RegisterForReflection;
-
-import java.awt.*;
 
 @RegisterForReflection
 public class Circle {

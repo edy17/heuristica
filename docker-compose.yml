@@ -1,8 +1,18 @@
 version: '3.7'
 
 services:
-  native_build:
+  api:
     build:
       context: .
-    volumes:
-      - ./target:/tmp/share
+      dockerfile: Dockerfile.native
+    ports:
+      - "localhost:8080:8080"
+  client:
+    build:
+      context: ./view
+      args:
+        BACKEND_API_URL: 'http://localhost:8080'
+    ports:
+      - "192.168.99.100:80:80"
+    depends_on:
+      - api

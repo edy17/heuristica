@@ -1,7 +1,8 @@
 package org.diehl.heuristica.domain.service;
 
+import org.diehl.heuristica.domain.model.Point;
+
 import javax.enterprise.context.ApplicationScoped;
-import java.awt.*;
 import java.util.ArrayList;
 
 @ApplicationScoped
