@@ -9,7 +9,7 @@ The version 1.0-SNAPSHOT provide only our implementation of:
 
 ## To compile api code as native executable and run local api server and and local client web server 
 - Install [Docker](https://docs.docker.com/install/)
-- In file, `docker-compose.yml` replace address `localhost` by your docker host if it's different
+- In file, `docker-compose.yml` replace ports specs by your docker host padding `<Docker host>:port:port` if it's different of `localhost`
 - In root folder, Run containers for native api server and web server with:
 ```
 docker-compose up

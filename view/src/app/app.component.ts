@@ -130,7 +130,6 @@ export class AppComponent implements OnInit, OnDestroy {
         detailedPoints.randomPoints.map(p => (this.setPoint(p, "yellow", true)));
         this.randomPointsUUID = detailedPoints.sessionUUID;
         this.getConvexEnvelope();
-        this.getMinimumDomainCircle();
       }), err => {
       console.log(err);
     };
@@ -152,6 +151,7 @@ export class AppComponent implements OnInit, OnDestroy {
           let line = this.setLine(first, last, "blue", false);
           lines.push(line);
           this.convexEnvelope = lines;
+          this.getMinimumDomainCircle();
         }), err => {
         console.log(err);
       };
